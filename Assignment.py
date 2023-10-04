@@ -18,11 +18,9 @@ class CSP:
         # the variable pair (i, j)
         self.constraints = {}
 
-        self.backtrack_called_counter = 0
-        self.backtrack_failure_counter = 0
-
     def add_variable(self, name: str, domain: list):
-        """Add a new variable to the CSP.
+        """
+        Add a new variable to the CSP.
 
         Parameters
         ----------
@@ -36,7 +34,8 @@ class CSP:
         self.constraints[name] = {}
 
     def get_all_possible_pairs(self, a: list, b: list) -> list[tuple]:
-        """Get a list of all possible pairs (as tuples) of the values in
+        """
+        Get a list of all possible pairs (as tuples) of the values in
         lists 'a' and 'b', where the first component comes from list
         'a' and the second component comes from list 'b'.
 
@@ -55,7 +54,8 @@ class CSP:
         return prod(a, b)
 
     def get_all_arcs(self) -> list[tuple]:
-        """Get a list of all arcs/constraints that have been defined in
+        """
+        Get a list of all arcs/constraints that have been defined in
         the CSP.
 
         Returns
@@ -67,7 +67,8 @@ class CSP:
         return [(i, j) for i in self.constraints for j in self.constraints[i]]
 
     def get_all_neighboring_arcs(self, var: str) -> list[tuple]:
-        """Get a list of all arcs/constraints going to/from variable 'var'.
+        """
+        Get a list of all arcs/constraints going to/from variable 'var'.
 
         Parameters
         ----------
@@ -83,7 +84,8 @@ class CSP:
 
     def add_constraint_one_way(self, i: str, j: str,
                                filter_function: callable):
-        """Add a new constraint between variables 'i' and 'j'. Legal
+        """
+        Add a new constraint between variables 'i' and 'j'. Legal
         values are specified by supplying a function 'filter_function',
         that should return True for legal value pairs, and False for
         illegal value pairs.
@@ -118,7 +120,8 @@ class CSP:
                                              self.constraints[i][j]))
 
     def add_all_different_constraint(self, var_list: list):
-        """Add an Alldiff constraint between all of the variables in the
+        """
+        Add an Alldiff constraint between all of the variables in the
         list provided.
 
         Parameters
@@ -131,7 +134,8 @@ class CSP:
                 self.add_constraint_one_way(i, j, lambda x, y: x != y)
 
     def backtracking_search(self):
-        """This functions starts the CSP solver and returns the found
+        """
+        This functions starts the CSP solver and returns the found
         solution.
         """
         # Make a so-called "deep copy" of the dictionary containing the
@@ -172,7 +176,6 @@ class CSP:
         assignments and inferences that took place in previous
         iterations of the loop.
         """
-        self.backtrack_called_counter += 1
         
         if all(len(assignment[variable]) == 1 for variable in assignment):
             return assignment
@@ -188,7 +191,6 @@ class CSP:
                     return result
             # assignment[variable].remove(value)
 
-        self.backtrack_failure_counter += 1
         return None    # return failure
 
 
@@ -261,7 +263,8 @@ class CSP:
 
 
 def create_map_coloring_csp():
-    """Instantiate a CSP representing the map coloring problem from the
+    """
+    Instantiate a CSP representing the map coloring problem from the
     textbook. This can be useful for testing your CSP solver as you
     develop your code.
     """
@@ -280,7 +283,8 @@ def create_map_coloring_csp():
 
 
 def create_sudoku_csp(filename: str) -> CSP:
-    """Instantiate a CSP representing the Sudoku board found in the text
+    """
+    Instantiate a CSP representing the Sudoku board found in the text
     file named 'filename' in the current directory.
 
     Parameters
@@ -322,7 +326,8 @@ def create_sudoku_csp(filename: str) -> CSP:
 
 
 def print_sudoku_solution(solution):
-    """Convert the representation of a Sudoku solution as returned from
+    """
+    Convert the representation of a Sudoku solution as returned from
     the method CSP.backtracking_search(), into a human readable
     representation.
     """
@@ -337,7 +342,7 @@ def print_sudoku_solution(solution):
 
 
 def main():
-    csp = create_sudoku_csp('medium.txt')
+    csp = create_sudoku_csp('easy.txt')
     solution = csp.backtracking_search()
     print_sudoku_solution(solution)
 
