@@ -250,16 +250,14 @@ class CSP:
         legal values in 'assignment'.
         """
 
-        revised = False
-
         for x in assignment[i]:
             if not any([self.constraints[i][j] for y in assignment[j] if (x, y) in self.constraints[i][j]]):
                 if isinstance(assignment[i], str):
                     assignment[i] = list(assignment[i])
                 assignment[i].remove(x)
-                revised = True
+                return True
         
-        return revised
+        return False
 
 
 def create_map_coloring_csp():
