@@ -18,6 +18,9 @@ class CSP:
         # the variable pair (i, j)
         self.constraints = {}
 
+        self.calls_count = 0
+        self.fails_count = 0
+
     def add_variable(self, name: str, domain: list):
         """
         Add a new variable to the CSP.
@@ -176,20 +179,25 @@ class CSP:
         assignments and inferences that took place in previous
         iterations of the loop.
         """
-        
-        if all(len(assignment[variable]) == 1 for variable in assignment):
+        self.calls_count += 1
+
+        if all(len(values) == 1 for values in assignment.values()):
             return assignment
     
         variable = self.select_unassigned_variable(assignment)
 
         for value in assignment[variable]:
             new_assignment = copy.deepcopy(assignment)
+            # if value is consistent with assignment (meaning ?)
             new_assignment[variable] = value
-            if self.inference(new_assignment, self.get_all_arcs()):
+
+            if self.inference(new_assignment, self.get_all_neighboring_arcs(variable)):
                 result = self.backtrack(new_assignment)
                 if result:
                     return result
             # assignment[variable].remove(value)
+
+        self.fails_count += 1
 
         return None    # return failure
 
@@ -206,6 +214,8 @@ class CSP:
         """
         next_variable, length = None, float('inf')
 
+        # print("select_unassigned_variable")
+
         for variable in assignment:
             if len(assignment[variable]) > 1 and len(assignment[variable]) < length:
                 next_variable = variable
@@ -221,7 +231,7 @@ class CSP:
         is the initial queue of arcs that should be visited.
         """
 
-        while queue:
+        while len(queue):
             i, j = queue.pop(0)
             if self.revise(assignment, i, j):
                 if len(assignment[i]) == 0:
@@ -342,9 +352,17 @@ def print_sudoku_solution(solution):
 
 
 def main():
-    csp = create_sudoku_csp('easy.txt')
-    solution = csp.backtracking_search()
-    print_sudoku_solution(solution)
+    types = ["easy", "medium", "hard", "veryhard"]
+    
+    for type in types:
+        print(type.capitalize() + " sudoku")
+        csp = create_sudoku_csp(type + ".txt")
+        solution = csp.backtracking_search()
+        print("Solution:")
+        print_sudoku_solution(solution)
+        print("Calls to the Backtrack function: ", csp.calls_count)
+        print("Fails of the Backtrack function: ", csp.fails_count)
+        print()
 
 if __name__ == "__main__":
     main()
