@@ -214,14 +214,11 @@ class CSP:
         """
         next_variable, length = None, float('inf')
 
-        # print("select_unassigned_variable")
-
         for variable in assignment:
             if len(assignment[variable]) > 1 and len(assignment[variable]) < length:
                 next_variable = variable
                 length = len(assignment[variable])
         return next_variable
-    
 
     def inference(self, assignment, queue):
         """
@@ -254,16 +251,9 @@ class CSP:
         """
 
         revised = False
-        found = False
 
         for x in assignment[i]:
-            for y in assignment[j]:
-                if (x,y) in self.constraints[i][j]:
-                    found = True
-                    break
-   
-            #  if not any([self.constraints[i][j] for y in assignment[j] if (x, y) in self.constraints[i][j]]):
-            if not found:
+            if not any([self.constraints[i][j] for y in assignment[j] if (x, y) in self.constraints[i][j]]):
                 if isinstance(assignment[i], str):
                     assignment[i] = list(assignment[i])
                 assignment[i].remove(x)
