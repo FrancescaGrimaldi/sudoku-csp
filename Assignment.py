@@ -181,7 +181,7 @@ class CSP:
         """
         self.calls_count += 1
 
-        if all(len(values) == 1 for values in assignment.values()):
+        if all(len(assignment[variable]) == 1 for variable in assignment):
             return assignment
     
         variable = self.select_unassigned_variable(assignment)
@@ -228,7 +228,7 @@ class CSP:
         is the initial queue of arcs that should be visited.
         """
 
-        while len(queue):
+        while queue:
             i, j = queue.pop(0)
             if self.revise(assignment, i, j):
                 if len(assignment[i]) == 0:
