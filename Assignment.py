@@ -179,25 +179,28 @@ class CSP:
         assignments and inferences that took place in previous
         iterations of the loop.
         """
-        self.calls_count += 1
+        self.calls_count += 1    # counts the number of times that the backtrack function is called
 
+        # if all variables are assigned to one and only one value, return assignment
         if all(len(assignment[variable]) == 1 for variable in assignment):
             return assignment
     
+        # select an unassigned variable
         variable = self.select_unassigned_variable(assignment)
 
         for value in assignment[variable]:
             new_assignment = copy.deepcopy(assignment)
             # if value is consistent with assignment (meaning ?)
             new_assignment[variable] = value
-
+            
             if self.inference(new_assignment, self.get_all_neighboring_arcs(variable)):
+                # recursively call backtrack with the new assignment and if it gives a solution, return it
                 result = self.backtrack(new_assignment)
                 if result:
                     return result
             # assignment[variable].remove(value)
 
-        self.fails_count += 1
+        self.fails_count += 1    # counts the number of times that the backtrack function fails
 
         return None    # return failure
 
@@ -212,9 +215,10 @@ class CSP:
 
         Here, the minimum-remaining-values (MRV) heuristic is adopted.
         """
-        next_variable, length = None, float('inf')
+        next_variable, length = None, float('inf')    # initialize next_variable to None and length to infinity, where length is the number of possible values for next_variable
 
         for variable in assignment:
+            # if variable is not assigned to one and only one value and the number of its possible values is less than the current length, we temporarily choose it as next_variable
             if len(assignment[variable]) > 1 and len(assignment[variable]) < length:
                 next_variable = variable
                 length = len(assignment[variable])
@@ -228,11 +232,13 @@ class CSP:
         is the initial queue of arcs that should be visited.
         """
 
-        while queue:
-            i, j = queue.pop(0)
+        while queue:    # while queue is not empty
+            i, j = queue.pop(0)    # pop the first element of the queue
             if self.revise(assignment, i, j):
+                # if the domain of variable i is empty, return False
                 if len(assignment[i]) == 0:
                     return False
+                # for each variable k in the neighbors of i, different from j, add k to the queue
                 for k in self.get_all_neighboring_arcs(i):
                     if k[0] != j:
                         queue.append(k)
@@ -251,6 +257,7 @@ class CSP:
         """
 
         for x in assignment[i]:
+            # if there is no value y in the domain of variable j that satisfies the constraint between i and j, remove x from the domain of variable i
             if not any([self.constraints[i][j] for y in assignment[j] if (x, y) in self.constraints[i][j]]):
                 if isinstance(assignment[i], str):
                     assignment[i] = list(assignment[i])
@@ -342,6 +349,7 @@ def print_sudoku_solution(solution):
 def main():
     types = ["easy", "medium", "hard", "veryhard"]
     
+    # for each type of sudoku, print its solution and number of calls/fails of the backtrack function
     for type in types:
         print(type.capitalize() + " sudoku")
         csp = create_sudoku_csp(type + ".txt")
