@@ -190,7 +190,6 @@ class CSP:
 
         for value in assignment[variable]:
             new_assignment = copy.deepcopy(assignment)
-            # if value is consistent with assignment (meaning ?)
             new_assignment[variable] = value
             
             if self.inference(new_assignment, self.get_all_neighboring_arcs(variable)):
@@ -256,6 +255,7 @@ class CSP:
         legal values in 'assignment'.
         """
 
+        # for each value x in the domain of variable i
         for x in assignment[i]:
             # if there is no value y in the domain of variable j that satisfies the constraint between i and j, remove x from the domain of variable i
             if not any([self.constraints[i][j] for y in assignment[j] if (x, y) in self.constraints[i][j]]):
@@ -351,7 +351,7 @@ def main():
     
     # for each type of sudoku, print its solution and number of calls/fails of the backtrack function
     for type in types:
-        print(type.capitalize() + " sudoku")
+        print("*** " + type.capitalize() + " sudoku ***")
         csp = create_sudoku_csp(type + ".txt")
         solution = csp.backtracking_search()
         print("Solution:")
